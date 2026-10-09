@@ -1,0 +1,15 @@
+<h3>الرئيسية</h3>
+<div id="cards" class="row g-3"></div>
+<h5 class="mt-4">أكثر المنتجات مبيعاً</h5>
+<ul id="top" class="list-group"></ul>
+@section Scripts { <script>
+(async () => {
+  try {
+    ui.loading(true);
+    const s = await ApiClient.get('/reports/summary');
+    document.getElementById('cards').innerHTML = [['المستخدمين', s.users], ['المنتجات', s.products], ['الطلبات', s.orders], ['الإيرادات', s.revenue]]
+      .map(([t, v]) => `<div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">${t}</div><h3>${v.toLocaleString()}</h3></div></div></div>`).join('');
+    document.getElementById('top').innerHTML = s.top.length ? s.top.map(t => `<li class="list-group-item d-flex justify-content-between">${ui.esc(t.name)}<span class="badge bg-primary">${t.sold}</span></li>`).join('') : '<li class="list-group-item text-muted">لا توجد بيانات</li>';
+  } finally { ui.loading(false); }
+})();
+</script> }
